@@ -1,0 +1,3 @@
+GitExtensions.settings
+**/node_modules/**
+**/.idea/**
