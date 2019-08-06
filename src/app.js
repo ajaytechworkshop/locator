@@ -18,7 +18,7 @@ app.use((req, res, next) => {
 //register location router
 app.use(locationRouter);
 //server static pages
-app.use(express.static('public'));
+app.use(express.static('views'));
 
 //404 error handler
 app.use((req, res, next) => {
@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 //500 error handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).sendFile(path.join(__dirname,'../public/error.html'));
+    res.status(500).sendFile(path.join(__dirname,'../views/error.html'));
 });
 
 //run app on the server
