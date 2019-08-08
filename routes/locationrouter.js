@@ -23,7 +23,7 @@ router.post('/location',(req, res) => {
 
 
 //get all locations
-router.get('/locations',(req, res)  => {
+router.get('/location/all',(req, res)  => {
    LocationModel.find()
             .then(doc => {
             if(!doc || doc.length == 0){

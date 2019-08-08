@@ -1,7 +1,23 @@
 {
   "version": 2,
   "builds": [
-    { "src": "/views/*.html", "use": "@now/static" },
-    { "src": "*.js", "use": "@now/node" }
+    {
+      "src": "/views/*.html",
+      "use": "@now/static"
+    },
+    {
+      "src": "*.js",
+      "use": "@now/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/app.js"
+    },
+    {
+      "src": "/location",
+      "dest": "/routes/locationrouter.js"
+    }
   ]
 }
