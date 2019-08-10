@@ -34,6 +34,6 @@ app.use((err, req, res, next) => {
 });
 
 //run app on the server
-app.listen(PORT, () => {
+app.listen(process.env.PORT || PORT, () => {
     console.info(`Locator app running on port ${PORT}`);
 });
