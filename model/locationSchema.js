@@ -9,12 +9,13 @@ let LocationSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    name: String,
+    notes: String,
     imageUrl: String,
     time: {
         type : Date,
         default: Date.now
-    }
+    },
+    userId: String
 });
 
 module.exports = mongoose.model('Location', LocationSchema);

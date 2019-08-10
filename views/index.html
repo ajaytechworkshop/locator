@@ -18,6 +18,7 @@
     <script>
 
         let mymap = L.map('mapid').setView([0, 0], 2.5);
+        let notes = null;
 
         loadMap();
         loadMyLocation();
@@ -33,20 +34,18 @@
         }
 
         //Load My Location    
-        function loadMyLocation()
-        {
-            navigator.geolocation.getCurrentPosition((position) => 
-            {
+        function loadMyLocation() {
+            navigator.geolocation.getCurrentPosition((position) => {
                 let currentLatitude = position.coords.latitude;
                 let currentLongitude = position.coords.longitude;
-                var circle = L.circle([currentLatitude,currentLongitude], {
+                var circle = L.circle([currentLatitude, currentLongitude], {
                     color: 'red',
                     fillColor: '#f03',
                     fillOpacity: 0.5,
                     radius: 5000
                 }).addTo(mymap);
-                mymap.setView([currentLatitude,currentLongitude],10);
-                L.marker([currentLatitude,currentLongitude]).addTo(mymap);    
+                mymap.setView([currentLatitude, currentLongitude], 10);
+                L.marker([currentLatitude, currentLongitude]).addTo(mymap).bindTooltip('You are currently here').openTooltip();
             });
         }
 
@@ -56,29 +55,31 @@
                 console.log(data);
                 for (i in data) {
                     L.marker([data[i].latitude, data[i].longitude],
-                    {
-                        markerId: data[i]._id,
-                        name: data[i].name
-                    }).addTo(mymap).on('click',(e)=>
-                    {
-                        fetch(`/location/${e.sourceTarget.options.markerId}`).then((response) => response.json()).then((data) => {
-                            e.sourceTarget.bindTooltip(e.sourceTarget.options.name).openTooltip();
+                        {
+                            markerId: data[i]._id,
+                            notes: data[i].notes
+                        }).addTo(mymap).on('mouseover', (e) => {
+                            fetch(`/location/${e.sourceTarget.options.markerId}`).then((response) => response.json()).then((data) => {
+                                e.sourceTarget.bindTooltip(e.sourceTarget.options.notes).openTooltip();
+                            });
+                            console.log(e.sourceTarget.options.markerId);
                         });
-                        console.log(e.sourceTarget.options.markerId);
-                    });
                 }
             });
         }
-       
+
         //Save the location on click on the map
-        mymap.on('click', function (e) {
-            //let popup = L.popup().setLatLng([e.latlng.lat, e.latlng.lng]).setContent('<p>Hello world!<br />This is a nice popup.</p>').openOn(mymap);
+        mymap.on('click', function (e,txtValue) {
+            let popup = L.popup().setLatLng([e.latlng.lat, e.latlng.lng])
+                .setContent(document.getElementById('popUp'), { latitude: e.latlng.lat, longitude: e.latlng.lng }).openOn(mymap);
             //marker.bindPopup(popup);
-            
-            const data = {
+            console.log(popup.options); 
+
+            $('#btnSave').click(() => {
+                const data = {
                 latitude: e.latlng.lat,
                 longitude: e.latlng.lng,
-                name: 'Test'
+                notes: document.getElementById('notes').value
             };
             const options = {
                 method: 'POST',
@@ -89,13 +90,22 @@
             };
             fetch('/location', options)
                 .then((response) => {
-                    if(response.status == 201){
+                    if (response.status == 201) {
                         populateSavedLocationInMap();
                     }
                 });
+            });
+          
+            
         });
 
     </script>
+    <div id="popUp" class="container">
+        <label for="notes">Notes</label>
+        <input type="text" id="notes" name="notes" />
+        <button id="btnSave"  name="save">Save</button>
+    </div>
+
 </body>
 
 </html>
