@@ -10,7 +10,11 @@ let LocationSchema = new mongoose.Schema({
         required: true,
     },
     name: String,
-    imageUrl: String
+    imageUrl: String,
+    time: {
+        type : Date,
+        default: Date.now
+    }
 });
 
 module.exports = mongoose.model('Location', LocationSchema);

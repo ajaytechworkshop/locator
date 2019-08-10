@@ -55,7 +55,17 @@
             fetch('/location/all').then((response) => response.json()).then((data) => {
                 console.log(data);
                 for (i in data) {
-                    L.marker([data[i].latitude, data[i].longitude]).addTo(mymap);
+                    L.marker([data[i].latitude, data[i].longitude],
+                    {
+                        markerId: data[i]._id,
+                        name: data[i].name
+                    }).addTo(mymap).on('click',(e)=>
+                    {
+                        fetch(`/location/${e.sourceTarget.options.markerId}`).then((response) => response.json()).then((data) => {
+                            e.sourceTarget.bindTooltip(e.sourceTarget.options.name).openTooltip();
+                        });
+                        console.log(e.sourceTarget.options.markerId);
+                    });
                 }
             });
         }
@@ -64,8 +74,7 @@
         mymap.on('click', function (e) {
             //let popup = L.popup().setLatLng([e.latlng.lat, e.latlng.lng]).setContent('<p>Hello world!<br />This is a nice popup.</p>').openOn(mymap);
             //marker.bindPopup(popup);
-            //marker.bindTooltip('Toolt tip text').openTooltip();
-           
+            
             const data = {
                 latitude: e.latlng.lat,
                 longitude: e.latlng.lng,
@@ -80,7 +89,6 @@
             };
             fetch('/location', options)
                 .then((response) => {
-                    console.log(response.status);
                     if(response.status == 201){
                         populateSavedLocationInMap();
                     }
