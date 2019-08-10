@@ -8,6 +8,7 @@ const PORT = 3000;
 
 //parse the incoming request body
 app.use(bodyParser.json());
+//app.use(bodyParser.urlencoded({extend:true}));
 
 //log the requests
 app.use((req, res, next) => {
@@ -28,7 +29,8 @@ app.use((req, res, next) => {
 //500 error handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).sendFile(path.join(__dirname,'../views/error.html'));
+    //res.status(500).sendFile(path.join(__dirname,'../views/error.html'));
+    res.status(500).send(err);
 });
 
 //run app on the server

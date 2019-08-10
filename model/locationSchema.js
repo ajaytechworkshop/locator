@@ -1,11 +1,6 @@
 let mongoose = require('../config/database');
 
 let LocationSchema = new mongoose.Schema({
-    id: {
-        type: String,
-        required: true,
-        unique: true
-    },
     latitude: {
         type: String,
         required: true,
@@ -18,4 +13,4 @@ let LocationSchema = new mongoose.Schema({
     imageUrl: String
 });
 
-module.exports = mongoose.model('Location',LocationSchema);
+module.exports = mongoose.model('Location', LocationSchema);
