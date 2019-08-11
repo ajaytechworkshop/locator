@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Geo Locator</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
         integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
@@ -19,7 +20,7 @@
     <div id="mapid" style="position: absolute;top: 0;bottom: 0;left: 0;right: 0;"></div>
     <script>
 
-        let mymap = L.map('mapid').setView([0, 0], 2.5);
+        let mymap = L.map('mapid');
         let notes = null;
 
         loadMap();
@@ -44,7 +45,7 @@
                     color: 'red',
                     fillColor: '#f03',
                     fillOpacity: 0.5,
-                    radius: 500
+                    radius: 5000
                 }).addTo(mymap);
                 mymap.setView([currentLatitude, currentLongitude], 10);
                 L.marker([currentLatitude, currentLongitude]).addTo(mymap).bindTooltip('You are currently here').openTooltip();
@@ -82,6 +83,9 @@
                         $('#btnSave').click(() => {
                             let options = {
                                 method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
                                 body: JSON.stringify({
                                     latitude: event.latlng.lat,
                                     lomgitude: event.latlng.lng,
