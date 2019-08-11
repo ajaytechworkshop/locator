@@ -1,5 +1,5 @@
 $(document).ready(() => {
-    let mymap = L.map('mapid');
+    let mymap = L.map('mapid').fitWorld();
     let notes = null;
 
     loadMap();
@@ -27,11 +27,11 @@ $(document).ready(() => {
                 radius: 5000
             }).addTo(mymap);
             mymap.setView([currentLatitude, currentLongitude], 10);
-            L.marker([currentLatitude, currentLongitude]).addTo(mymap).bindTooltip('You are currently here').openTooltip();
+            L.marker([currentLatitude, currentLongitude]).addTo(mymap).bindTooltip('Good Day !!!  You are currently here').openTooltip();
         });
     }
-
-    //
+    
+    //plot the saved location from database into the map
     function populateSavedLocationInMap() {
         console.log("Fetching All Locations");
         fetch('/location/all').then((response) => response.json()).then((data) => {
