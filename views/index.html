@@ -11,6 +11,7 @@
         integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
         crossorigin=""></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
 </head>
 
 <body>
@@ -63,6 +64,8 @@
                                 e.sourceTarget.bindTooltip(e.sourceTarget.options.notes).openTooltip();
                             });
                             console.log(e.sourceTarget.options.markerId);
+                        }).on('click',()=>{
+                            alert('Marker clicked');
                         });
                 }
             });
@@ -71,22 +74,21 @@
         //Save the location on click on the map
         mymap.on('click', function (e,txtValue) {
             let popup = L.popup().setLatLng([e.latlng.lat, e.latlng.lng])
-                .setContent(document.getElementById('popUp'), { latitude: e.latlng.lat, longitude: e.latlng.lng }).openOn(mymap);
+                .setContent('<div class="panel-body" id="popUp"><h6>Notes</h6><input type="text" id="notes" name="notes" width="100"/><button id="btnSave" name="save">Save</button>').openOn(mymap);
             //marker.bindPopup(popup);
-            console.log(popup.options); 
-
+            
             $('#btnSave').click(() => {
-                const data = {
-                latitude: e.latlng.lat,
-                longitude: e.latlng.lng,
-                notes: document.getElementById('notes').value
-            };
+            document.getElementsByClassName('leaflet-popup-content').hidden = true;
             const options = {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify({
+                    latitude: e.latlng.lat,
+                    longitude: e.latlng.lng,
+                    notes: document.getElementById('notes').value
+                })
             };
             fetch('/location', options)
                 .then((response) => {
@@ -94,18 +96,19 @@
                         populateSavedLocationInMap();
                     }
                 });
-            });
-          
-            
+            });       
         });
 
+        function createPopup(){
+            var div = new Element('div');
+            div.id = 'popUp';
+            
+            var input = new Element('input');
+            input.type = text;
+
+            div.appendChild(input);
+        }
+
     </script>
-    <div id="popUp" class="container">
-        <label for="notes">Notes</label>
-        <input type="text" id="notes" name="notes" />
-        <button id="btnSave"  name="save">Save</button>
-    </div>
-
 </body>
-
 </html>
