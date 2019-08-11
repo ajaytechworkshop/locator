@@ -54,6 +54,7 @@ router.get('/location/:id', (req, res) => {
 //update the location
 router.put('/location/:id', (req, res) => {
     console.log(`Updating location..${req.params.id}`);
+    console.log(req.body);
     LocationModel.findOneAndUpdate({
         _id: `${req.params.id}`
     }, req.body, { new: true })
@@ -64,6 +65,16 @@ router.put('/location/:id', (req, res) => {
             console.log(err);
             res.status(500).json(err);
         });
+});
+
+//delete location
+router.delete('/location/:id',(req, res) => {
+    LocationModel.findByIdAndDelete({
+        _id: `${req.params.id}`
+    }).then(doc => {
+        console.log('Location deleted successfully');
+        res.status(202).send(doc);
+    })
 });
 
 module.exports = router;

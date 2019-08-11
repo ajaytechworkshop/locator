@@ -11,7 +11,8 @@
         integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
         crossorigin=""></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
 </head>
 
 <body>
@@ -43,7 +44,7 @@
                     color: 'red',
                     fillColor: '#f03',
                     fillOpacity: 0.5,
-                    radius: 5000
+                    radius: 500
                 }).addTo(mymap);
                 mymap.setView([currentLatitude, currentLongitude], 10);
                 L.marker([currentLatitude, currentLongitude]).addTo(mymap).bindTooltip('You are currently here').openTooltip();
@@ -56,53 +57,82 @@
                 console.log(data);
                 for (i in data) {
                     L.marker([data[i].latitude, data[i].longitude],
-                        {
-                            markerId: data[i]._id,
-                            notes: data[i].notes
-                        }).addTo(mymap).on('mouseover', (e) => {
-                            fetch(`/location/${e.sourceTarget.options.markerId}`).then((response) => response.json()).then((data) => {
-                                e.sourceTarget.bindTooltip(e.sourceTarget.options.notes).openTooltip();
-                            });
-                            console.log(e.sourceTarget.options.markerId);
-                        }).on('click',()=>{
-                            alert('Marker clicked');
+                    {
+                        markerId: data[i]._id,
+                        notes: data[i].notes
+                    }).addTo(mymap).on('mouseover', (e) => {
+                        fetch(`/location/${e.sourceTarget.options.markerId}`).then((response) => response.json()).then((data) => {
+                            e.sourceTarget.bindTooltip(e.sourceTarget.options.notes).openTooltip();
                         });
+                        console.log(e.sourceTarget.options.markerId);
+                    }).on('click', (event) => {
+                        L.popup().setLatLng([event.latlng.lat, event.latlng.lng]).setContent('<div class="panel-body" id="popUp"><h6>Notes</h6><input type="text" id="notes" name="notes" width="100"/><div class="panel-body"><div class="btn-group-horizontal"><button id="btnSave" class="btn btn-success" name="save" style="margin-right:5px">Save</button><button class="btn btn-danger" id="btnDelete" name="delete">Delete</button></div></div>').openOn(mymap);
+                        $('#notes').val(event.sourceTarget.options.notes);
+                        $('#btnDelete').click(() => {
+                            const options = {
+                                method: 'DELETE',
+                            };
+                            fetch(`/location/${event.sourceTarget.options.markerId}`, options).then((response) => {
+                                if (response.status == 202) {
+                                    location.reload();
+                                }
+                            }
+                            );
+                        });
+                        $('#btnSave').click(() => {
+                            let options = {
+                                method: 'PUT',
+                                body: JSON.stringify({
+                                    latitude: event.latlng.lat,
+                                    lomgitude: event.latlng.lng,
+                                    notes: document.getElementById('notes').value
+                                })
+                            };
+                            //alert(document.getElementById('notes').value);
+                            fetch(`/location/${event.sourceTarget.options.markerId}`, options).then((response) => {
+                                if(response.status == 200){
+                                    location.reload();
+                                }
+                            });
+                        });
+                    });
                 }
             });
         }
 
         //Save the location on click on the map
-        mymap.on('click', function (e,txtValue) {
+        mymap.on('click', function (e, txtValue) {
             let popup = L.popup().setLatLng([e.latlng.lat, e.latlng.lng])
-                .setContent('<div class="panel-body" id="popUp"><h6>Notes</h6><input type="text" id="notes" name="notes" width="100"/><button id="btnSave" name="save">Save</button>').openOn(mymap);
+                .setContent('<div class="panel-body" id="popUp"><h6>Notes</h6><input type="text"  id="notes" name="notes" width="100"/><button class="btn btn-success" style="margin-left:5px" id="btnSave" name="save">Save</button>').openOn(mymap);
             //marker.bindPopup(popup);
-            
+
             $('#btnSave').click(() => {
-            document.getElementsByClassName('leaflet-popup-content').hidden = true;
-            const options = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    latitude: e.latlng.lat,
-                    longitude: e.latlng.lng,
-                    notes: document.getElementById('notes').value
-                })
-            };
-            fetch('/location', options)
-                .then((response) => {
-                    if (response.status == 201) {
-                        populateSavedLocationInMap();
-                    }
-                });
-            });       
+                document.getElementsByClassName('leaflet-popup-content').hidden = true;
+                const options = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        latitude: e.latlng.lat,
+                        longitude: e.latlng.lng,
+                        notes: document.getElementById('notes').value
+                    })
+                };
+                fetch('/location', options)
+                    .then((response) => {
+                        if (response.status == 201) {
+                            //populateSavedLocationInMap();
+                            location.reload();
+                        }
+                    });
+            });
         });
 
-        function createPopup(){
+        function createPopup() {
             var div = new Element('div');
             div.id = 'popUp';
-            
+
             var input = new Element('input');
             input.type = text;
 
@@ -111,4 +141,5 @@
 
     </script>
 </body>
+
 </html>
