@@ -1,15 +1,22 @@
 FROM node:latest
+
 #Install Node JS in the alpine linux distribution
 #RUN apk add --no-cache nodejs npm
 
-#Work Directory
+#Create working directory
+RUN mkdir -p /app
+
+#Specify Work Directory
 WORKDIR /app
+
+#Copy the package.json  into working directory
+COPY package*.json /app/
+
+#Install the npm dependecies
+RUN npm install
 
 #Copy the sourcecode into /app folder
 COPY . /app
-
-#Install the npm dependecies after copying the source code
-RUN npm install
 
 #Expose the applicaiton running port
 EXPOSE 3000
