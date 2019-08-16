@@ -1,3 +1,5 @@
 GitExtensions.settings
 **/node_modules/**
 **/.idea/**
+*/node_modules/*
+**/data/**

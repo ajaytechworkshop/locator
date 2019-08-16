@@ -1,7 +1,7 @@
-FROM node:latest
+FROM alpine:latest
 
 #Install Node JS in the alpine linux distribution
-#RUN apk add --no-cache nodejs npm
+RUN apk add --update nodejs npm
 
 #Create working directory
 RUN mkdir -p /app
