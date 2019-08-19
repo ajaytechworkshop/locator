@@ -4,15 +4,16 @@ $(document).ready(() => {
         color: 'red',
         radius: 6
     });
-    let mymap = L.map('mapid').fitWorld().locate({ setView: true, watch: true, maxZoom: 17 })
+    let mymap = L.map('mapid').fitWorld().locate({ setView: false, watch: true, maxZoom: 16})
         .on('locationfound', (e) => {
             // Set marker and circle on the current posion on each 'locationfound' event
-            marker.setLatLng(e.latlng).addTo(mymap).bindTooltip('Hello !!').openTooltip();
+            marker.setLatLng(e.latlng).addTo(mymap).bindTooltip('Hello I am here!!').openTooltip();
             circle.setLatLng(e.latlng).addTo(mymap);
         });
     let notes = null;
 
     loadMap();
+    loadInitialPosition();
     populateSavedLocationInMap();
 
     function loadMap() {
@@ -37,17 +38,17 @@ $(document).ready(() => {
     }
 
     //Load My Location    
-    function startNavigation(flag) {
+    function loadInitialPosition(flag) {
         navigator.geolocation.getCurrentPosition((position) => {
             let currentLatitude = position.coords.latitude;
             let currentLongitude = position.coords.longitude;
             console.log(mymap);
-            alert('Navigation Turned on:' + flag);
-            mymap.setView([currentLatitude, currentLongitude], 18).locate({ setView: true, watch: flag }).on('locationfound', (e) => {
+            mymap.setView([currentLatitude,currentLongitude],17);
+           /**  mymap.setView([currentLatitude, currentLongitude], 16).locate({ setView: true, watch: flag }).on('locationfound', (e) => {
                 // Set marker and circle on the current posion on each 'locationfound' event
                 marker.setLatLng(e.latlng).addTo(mymap);
                 circle.setLatLng(e.latlng).addTo(mymap);
-            });
+            });*/
         });
     }
 
