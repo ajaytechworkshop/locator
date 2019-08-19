@@ -1,9 +1,18 @@
 $(document).ready(() => {
-    let mymap = L.map('mapid').fitWorld();
+    let marker = L.marker([0, 0]).bindTooltip('Hallo !! Have a nice day').openTooltip();
+    let circle = L.circle([0, 0], {
+        color: 'red',
+        radius: 6
+    });
+    let mymap = L.map('mapid').fitWorld().locate({ setView: true, watch: true, maxZoom: 17 })
+        .on('locationfound', (e) => {
+            // Set marker and circle on the current posion on each 'locationfound' event
+            marker.setLatLng(e.latlng).addTo(mymap).bindTooltip('Hello !!').openTooltip();
+            circle.setLatLng(e.latlng).addTo(mymap);
+        });
     let notes = null;
 
     loadMap();
-    loadMyLocation();
     populateSavedLocationInMap();
 
     function loadMap() {
@@ -11,26 +20,47 @@ $(document).ready(() => {
         const attribution = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>';
         const accessToken = 'pk.eyJ1IjoiYWpheXRlY2h3b3Jrc2hvcCIsImEiOiJjanowMXo5cTMwN2M0M21xbGgzN3c2eXk4In0.o3sB4fUIa4Zqbn2Jf17D_Q';
 
-        L.tileLayer(`${tilesurl}`, { attribution: `${attribution}`, maxZoom: 18, id: 'mapbox.streets', accessToken: `${accessToken}` }).addTo(mymap);
+        const tilesIUrl_OpenStreet = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        const attribution_OpenStreet = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+
+        //Using tiles by Mapbox
+        //L.tileLayer(`${tilesurl}`, { attribution: `${attribution}`, maxZoom: 18, id: 'mapbox.streets', accessToken: `${accessToken}` }).addTo(mymap);
+
+        //Using tiles from open street
+        L.tileLayer(`${tilesIUrl_OpenStreet}`, { attribution: `${attribution_OpenStreet}`, maxZoom: 18 }).addTo(mymap);
         console.log("Map  Loaded");
+
+        //Button to toggle the watch property of the map on and off
+        //L.easyButton('fa-globe', function (btn, map) {
+            //startNavigation(!mymap._locateOptions.watch);
+        //}).addTo(mymap)
     }
 
     //Load My Location    
-    function loadMyLocation() {
+    function startNavigation(flag) {
         navigator.geolocation.getCurrentPosition((position) => {
             let currentLatitude = position.coords.latitude;
             let currentLongitude = position.coords.longitude;
-            var circle = L.circle([currentLatitude, currentLongitude], {
-                color: 'red',
-                fillColor: '#f03',
-                fillOpacity: 0.5,
-                radius: 5000
-            }).addTo(mymap);
-            mymap.setView([currentLatitude, currentLongitude], 10);
-            L.marker([currentLatitude, currentLongitude]).addTo(mymap).bindTooltip('Good Day !!!  You are currently here').openTooltip();
+            console.log(mymap);
+            alert('Navigation Turned on:' + flag);
+            mymap.setView([currentLatitude, currentLongitude], 18).locate({ setView: true, watch: flag }).on('locationfound', (e) => {
+                // Set marker and circle on the current posion on each 'locationfound' event
+                marker.setLatLng(e.latlng).addTo(mymap);
+                circle.setLatLng(e.latlng).addTo(mymap);
+            });
         });
     }
-    
+
+    /*Old Logic to load the current location Starts here
+    //Add a marker and circle on the current location 
+    var circle = L.circle([currentLatitude, currentLongitude], {
+        color: 'blue',
+        radius: 6
+    }).addTo(mymap);
+    mymap.setView([currentLatitude, currentLongitude],18);
+    L.marker([currentLatitude, currentLongitude]).addTo(mymap).bindTooltip('Halo!!Good Day !!! You are here').openTooltip();
+    Old Logic to load the current location ends here*/
+
     //plot the saved location from database into the map
     function populateSavedLocationInMap() {
         console.log("Fetching All Locations");
@@ -42,9 +72,9 @@ $(document).ready(() => {
                         markerId: data[i]._id,
                         notes: data[i].notes
                     }).addTo(mymap).on('mouseover', (e) => {
-                        if(e.sourceTarget.options.notes){
+                        if (e.sourceTarget.options.notes) {
                             e.sourceTarget.bindTooltip(e.sourceTarget.options.notes).openTooltip();
-                        }    
+                        }
                         console.log(e.sourceTarget.options.markerId);
                     }).on('click', (event) => {
                         L.popup().setLatLng([event.latlng.lat, event.latlng.lng]).setContent('<div class="panel-body" id="popUp"><h6>Notes</h6><input type="text" id="notes" name="notes" width="100"/><div class="panel-body"><div class="btn-group-horizontal"><button id="btnSave" class="btn btn-success" name="save" style="margin-right:5px">Save</button><button class="btn btn-danger" id="btnDelete" name="delete">Delete</button></div></div>').openOn(mymap);
