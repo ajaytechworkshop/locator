@@ -1,16 +1,17 @@
 $(document).ready(() => {
-    let marker = L.marker([0, 0]).bindTooltip('Hallo !! Have a nice day').openTooltip();
+    let marker = L.marker([0, 0]);
     let circle = L.circle([0, 0], {
         color: 'red',
-        radius: 6
+        radius: 1000
     });
-    let mymap = L.map('mapid').fitWorld().locate({ setView: false, watch: true, maxZoom: 16})
+    let mymap = L.map('mapid').fitWorld().locate({ setView: false, watch: true, maxZoom: 18, enableHighAccuracy:true})
         .on('locationfound', (e) => {
             // Set marker and circle on the current posion on each 'locationfound' event
-            marker.setLatLng(e.latlng).addTo(mymap).bindTooltip('Hello I am here!!').openTooltip();
+            marker.setLatLng(e.latlng).addTo(mymap).bindTooltip('Hello !! Your Current Location.');
             circle.setLatLng(e.latlng).addTo(mymap);
         });
     let notes = null;
+    let sidebar = L.control.sidebar('sidebar').addTo(mymap);
 
     loadMap();
     loadInitialPosition();
@@ -30,11 +31,6 @@ $(document).ready(() => {
         //Using tiles from open street
         L.tileLayer(`${tilesIUrl_OpenStreet}`, { attribution: `${attribution_OpenStreet}`, maxZoom: 18 }).addTo(mymap);
         console.log("Map  Loaded");
-
-        //Button to toggle the watch property of the map on and off
-        //L.easyButton('fa-globe', function (btn, map) {
-            //startNavigation(!mymap._locateOptions.watch);
-        //}).addTo(mymap)
     }
 
     //Load My Location    
@@ -43,24 +39,9 @@ $(document).ready(() => {
             let currentLatitude = position.coords.latitude;
             let currentLongitude = position.coords.longitude;
             console.log(mymap);
-            mymap.setView([currentLatitude,currentLongitude],17);
-           /**  mymap.setView([currentLatitude, currentLongitude], 16).locate({ setView: true, watch: flag }).on('locationfound', (e) => {
-                // Set marker and circle on the current posion on each 'locationfound' event
-                marker.setLatLng(e.latlng).addTo(mymap);
-                circle.setLatLng(e.latlng).addTo(mymap);
-            });*/
+            mymap.setView([currentLatitude,currentLongitude],10);
         });
     }
-
-    /*Old Logic to load the current location Starts here
-    //Add a marker and circle on the current location 
-    var circle = L.circle([currentLatitude, currentLongitude], {
-        color: 'blue',
-        radius: 6
-    }).addTo(mymap);
-    mymap.setView([currentLatitude, currentLongitude],18);
-    L.marker([currentLatitude, currentLongitude]).addTo(mymap).bindTooltip('Halo!!Good Day !!! You are here').openTooltip();
-    Old Logic to load the current location ends here*/
 
     //plot the saved location from database into the map
     function populateSavedLocationInMap() {

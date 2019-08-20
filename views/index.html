@@ -25,17 +25,53 @@
     <!-- link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css"/>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"-->
+    
 
+
+    <!--Leaflet-->
     <script src="./lib/leaflet/leaflet.js"></script>
     <link rel="stylesheet" href="./lib/leaflet/leaflet.css"/>
+    <!--JQuery--->
     <script src="./lib/jquery-3.4.1.min.js"></script>
+    <!--Boot strap CSS--->
     <link rel="stylesheet" href="./lib/bootstrap-3.4.1-dist/css/bootstrap.min.css"/>
-    
+    <!--Side Bar-->
+    <link rel="stylesheet" href="./lib/leaflet-sidebar/leaflet-sidebar.css"/>
+    <script src="./lib/leaflet-sidebar/leaflet-sidebar.js"></script>
+    <!-- Icons and Fonts-->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"/>
+     
 </head>
 
 <body>
     <div id="mapid" style="position: absolute;top: 0;bottom: 0;left: 0;right: 0;">
             <script src="./js/index.js"></script>
+    </div>
+    <div id="sidebar" class="sidebar collapsed" style="opacity: 0.7;height: 30%">
+         <!-- Nav tabs -->
+         <div class="sidebar-tabs">
+            <ul role="tablist">
+                <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
+                <li><a href="#bookmark" role="tab"><i class="fa fa-bookmark"></i></a></li>
+                <li><a href="#info" role="tab"><i class="fa fa-info"></i></a></li>
+            </ul>
+        </div>
+        <!-- Tab panes -->
+        <div class="sidebar-content">
+            <div class="sidebar-pane" id="home">
+                <h1 class="sidebar-header">
+                    Notes<span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                </h1>
+            </div>
+
+            <div class="sidebar-pane" id="bookmark">
+                <h1 class="sidebar-header">Notes<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+            </div>
+
+            <div class="sidebar-pane" id="info">
+                <h1 class="sidebar-header">Info<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+            </div>
+        </div>
     </div>
 </body>
 </html>
