@@ -2,7 +2,7 @@ $(document).ready(() => {
     let marker = L.marker([0, 0]);
     let circle = L.circle([0, 0], {
         color: 'red',
-        radius: 1000
+        radius: 500
     });
     let mymap = L.map('mapid').fitWorld().locate({ setView: false, watch: true, maxZoom: 18, enableHighAccuracy:true})
         .on('locationfound', (e) => {
@@ -39,7 +39,7 @@ $(document).ready(() => {
             let currentLatitude = position.coords.latitude;
             let currentLongitude = position.coords.longitude;
             console.log(mymap);
-            mymap.setView([currentLatitude,currentLongitude],10);
+            mymap.setView([currentLatitude,currentLongitude],12);
         });
     }
 
